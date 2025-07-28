@@ -47,7 +47,7 @@ class ProfileButtons extends StatelessWidget {
         ),
         width: 150,
         height: 45,
-        child: Text("Follow", style: TextStyle(color: Colors.black)),
+        child: Text("Message", style: TextStyle(color: Colors.black)),
       ),
     );
   }
