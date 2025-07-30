@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  http.Response res = await fetchPosts();
+  http.Response res = await fetchPost();
   if (res.statusCode == 200) {
     print("통신 성공");
     print(res.headers.runtimeType);
@@ -22,7 +22,7 @@ void main() async {
   }
 }
 
-Future<http.Response> fetchPosts() async {
+Future<http.Response> fetchPost() async {
   String url = "http://jsonplaceholder.typicode.com/posts/1";
   http.Response response = await http.get(Uri.parse(url));
   print(response.runtimeType);
