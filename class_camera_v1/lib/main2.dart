@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
                     ElevatedButton.icon(
                       // _isLoading
                       onPressed: (_selectedImage != null && !_isLoading)
-                          ? () {}
+                          ? _saveImageToGallery
                           : null,
                       icon: const Icon(Icons.photo_library),
                       label: const Text('저장'),
@@ -221,5 +221,51 @@ class _MyAppState extends State<MyApp> {
       });
       print("갤러리 열기 오류 확인 : ${e}");
     }
+  }
+
+  void _saveImageToGallery() async {
+    if (_selectedImage == null) return;
+    setState(() {
+      _isLoading = true;
+      statusMessage = "이미지를 갤러리에 저장중...";
+    });
+
+    try {
+      // 갤러리 접근 권한 확인 요청
+      if (await Gal.hasAccess() == false) {
+        await Gal.requestAccess();
+      }
+
+      // 갤러리에 저장
+      Gal.putImage(_selectedImage!.path);
+      setState(() {
+        _isLoading = false;
+        statusMessage = "갤러리에 저장 완료";
+      });
+
+      // 3초 후에 원래 메세지로 복원
+      Future.delayed(const Duration(seconds: 3), () {
+        // 위젯이 여전히 마운트되어 있는지 확인
+        if (mounted) {
+          // 이 속성은 위젯 트리에 여전히 연결이 되어 있는지 확인
+          // 이유는 dispose 호출 된 이후에 개발자가
+          // setState() 메서드 호출하면 오류 발생함
+          setState(() {
+            statusMessage = "사진을 선택하거나 촬영하세요";
+          });
+        }
+      });
+    } catch (e) {
+      setState(() {
+        statusMessage = "이미지 저장중 오류 발생";
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // 자원 연결 해제 코드 일반적으로 작성해 준다.
   }
 }
