@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:class_camera_v1/helper/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
@@ -140,12 +141,12 @@ class _MyAppState extends State<MyApp> {
                     ElevatedButton.icon(
                       // _isLoading
                       onPressed: (_selectedImage != null && !_isLoading)
-                          ? _saveImageToGallery
+                          ? _uploadToServer
                           : null,
                       icon: const Icon(Icons.photo_library),
                       label: const Text('서버로 전송'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
+                        backgroundColor: Colors.amber,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           horizontal: 20,
@@ -295,6 +296,12 @@ class _MyAppState extends State<MyApp> {
     });
 
     // 서버측으로 통신하는 코드
+    final result = ImageHelper.uploadToServer(_selectedImage!);
+
+    setState(() {
+      _isLoading = false;
+      statusMessage = '사진 업로드 완료 ...';
+    });
   }
 
   @override
