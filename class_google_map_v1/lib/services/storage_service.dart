@@ -92,4 +92,17 @@ class StorageService {
   }
 
   /// 특정 id 값으로 마커 객체 하나를 삭제 하는 코드를 만들어 보시오.
+  Future<bool> deleteMarker(String markerId) async {
+    try {
+      final markers = await loadMarkers();
+      final updateMarkers =
+          // list.where() --> 조건을 만족하는 요소들만 걸러내서 새로운 컬렉션을
+          // 만들어 주는 메서드 이다.
+          markers.where((marker) => marker.id != markerId).toList();
+      return await saveMarkers(updateMarkers);
+    } catch (e) {
+      print('마커 삭제 오류: $e');
+      return false;
+    }
+  }
 }
